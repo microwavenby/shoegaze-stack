@@ -3,7 +3,7 @@ const crypto = require("crypto");
 const fs = require("fs/promises");
 const path = require("path");
 
-const toml = require("@iarna/toml");
+const { toLogicalID } = require("@architect/utils");
 const PackageJson = require("@npmcli/package-json");
 const semver = require("semver");
 const YAML = require("yaml");
@@ -128,7 +128,7 @@ const main = async ({ isTypeScript, packageManager, rootDirectory }) => {
   const FILE_EXTENSION = isTypeScript ? "ts" : "js";
 
   const README_PATH = path.join(rootDirectory, "README.md");
-  const FLY_TOML_PATH = path.join(rootDirectory, "fly.toml");
+  const APP_ARC_PATH = path.join(rootDirectory, "./app.arc");
   const EXAMPLE_ENV_PATH = path.join(rootDirectory, ".env.example");
   const ENV_PATH = path.join(rootDirectory, ".env");
   const DEPLOY_WORKFLOW_PATH = path.join(
@@ -137,7 +137,7 @@ const main = async ({ isTypeScript, packageManager, rootDirectory }) => {
     "workflows",
     "deploy.yml"
   );
-  const DOCKERFILE_PATH = path.join(rootDirectory, "Dockerfile");
+  const REMIX_CONFIG_PATH = path.join(rootDirectory, "remix.config.js");
   const CYPRESS_SUPPORT_PATH = path.join(rootDirectory, "cypress", "support");
   const CYPRESS_COMMANDS_PATH = path.join(
     CYPRESS_SUPPORT_PATH,
@@ -156,8 +156,6 @@ const main = async ({ isTypeScript, packageManager, rootDirectory }) => {
     `vitest.config.${FILE_EXTENSION}`
   );
 
-  const REPLACER = "blues-stack-template";
-
   const DIR_NAME = path.basename(rootDirectory);
   const SUFFIX = getRandomString(2);
 
@@ -166,27 +164,27 @@ const main = async ({ isTypeScript, packageManager, rootDirectory }) => {
     .replace(/[^a-zA-Z0-9-_]/g, "-");
 
   const [
-    prodContent,
+    appArc,
     readme,
     env,
-    dockerfile,
     cypressCommands,
     createUserCommand,
     deleteUserCommand,
     deployWorkflow,
+    remixConfig,
     vitestConfig,
     packageJson,
   ] = await Promise.all([
-    fs.readFile(FLY_TOML_PATH, "utf-8"),
+    fs.readFile(APP_ARC_PATH, "utf-8"),
     fs.readFile(README_PATH, "utf-8"),
     fs.readFile(EXAMPLE_ENV_PATH, "utf-8"),
-    fs.readFile(DOCKERFILE_PATH, "utf-8"),
     fs.readFile(CYPRESS_COMMANDS_PATH, "utf-8"),
     fs.readFile(CREATE_USER_COMMAND_PATH, "utf-8"),
     fs.readFile(DELETE_USER_COMMAND_PATH, "utf-8"),
     readFileIfNotTypeScript(isTypeScript, DEPLOY_WORKFLOW_PATH, (s) =>
       YAML.parse(s)
     ),
+    readFileIfNotTypeScript(isTypeScript, REMIX_CONFIG_PATH),
     readFileIfNotTypeScript(isTypeScript, VITEST_CONFIG_PATH),
     PackageJson.load(rootDirectory),
   ]);
@@ -194,14 +192,6 @@ const main = async ({ isTypeScript, packageManager, rootDirectory }) => {
   const newEnv = env.replace(
     /^SESSION_SECRET=.*$/m,
     `SESSION_SECRET="${getRandomString(16)}"`
-  );
-
-  const prodToml = toml.parse(prodContent);
-  prodToml.app = prodToml.app.replace(REPLACER, APP_NAME);
-
-  const newReadme = readme.replace(
-    new RegExp(escapeRegExp(REPLACER), "g"),
-    APP_NAME
   );
 
   const newDockerfile = pm.lockfile
@@ -214,10 +204,15 @@ const main = async ({ isTypeScript, packageManager, rootDirectory }) => {
   updatePackageJson({ APP_NAME, isTypeScript, packageJson });
 
   const fileOperationPromises = [
-    fs.writeFile(FLY_TOML_PATH, toml.stringify(prodToml)),
-    fs.writeFile(README_PATH, newReadme),
     fs.writeFile(ENV_PATH, newEnv),
-    fs.writeFile(DOCKERFILE_PATH, newDockerfile),
+    fs.writeFile(
+      README_PATH,
+      readme.replace(new RegExp("RemixShoegazeStack", "g"), toLogicalID(APP_NAME))
+    ),
+    fs.writeFile(
+      APP_ARC_PATH,
+      appArc.replace("shoegaze-stack-template", APP_NAME)
+    ),
     ...cleanupCypressFiles({
       fileEntries: [
         [CYPRESS_COMMANDS_PATH, cypressCommands],
