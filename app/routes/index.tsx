@@ -12,8 +12,8 @@ export default function Index() {
             <div className="absolute inset-0">
               <img
                 className="h-full w-full object-cover"
-                src="https://cdn-std.droplr.net/files/acc_604440/kMRfUr"
-                alt="Patti King singing into a microphone"
+                src="https://user-images.githubusercontent.com/1500684/158276320-c46b661b-8eff-4a4d-82c6-cf296c987a12.jpg"
+                alt="BB King playing blues on his Les Paul guitar"
               />
               <div className="absolute inset-0 bg-[color:rgba(27,167,254,0.5)] mix-blend-multiply" />
             </div>
@@ -67,14 +67,9 @@ export default function Index() {
           <div className="mt-6 flex flex-wrap justify-center gap-8">
             {[
               {
-                src: "https://user-images.githubusercontent.com/1500684/157991167-651c8fc5-2f72-4afa-94d8-2520ecbc5ebc.svg",
-                alt: "AWS",
-                href: "https://aws.com",
-              },
-              {
-                src: "https://user-images.githubusercontent.com/1500684/157990874-31f015c3-2af7-4669-9d61-519e5ecfdea6.svg",
-                alt: "Architect",
-                href: "https://arc.codes",
+                src: "https://user-images.githubusercontent.com/1500684/157764397-ccd8ea10-b8aa-4772-a99b-35de937319e1.svg",
+                alt: "Fly.io",
+                href: "https://fly.io",
               },
               {
                 src: "https://user-images.githubusercontent.com/1500684/158238105-e7279a0c-1640-40db-86b0-3d3a10aab824.svg",
