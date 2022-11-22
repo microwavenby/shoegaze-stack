@@ -194,13 +194,6 @@ const main = async ({ isTypeScript, packageManager, rootDirectory }) => {
     `SESSION_SECRET="${getRandomString(16)}"`
   );
 
-  const newDockerfile = pm.lockfile
-    ? dockerfile.replace(
-        new RegExp(escapeRegExp("ADD package.json"), "g"),
-        `ADD package.json ${pm.lockfile}`
-      )
-    : dockerfile;
-
   updatePackageJson({ APP_NAME, isTypeScript, packageJson });
 
   const fileOperationPromises = [
