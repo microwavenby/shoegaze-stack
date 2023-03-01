@@ -4,15 +4,19 @@ package-lock.json
 yarn.lock
 pnpm-lock.yaml
 pnpm-lock.yml
-
+tsconfig.tsbuildinfo
 node_modules
 
 /build
 /public/build
 .env
 
-/cypress/screenshots
-/cypress/videos
 /postgres-data
 
-/app/styles/tailwind.css
+/.cache
+/test-results/
+/playwright-report/
+/playwright/.cache/
+/app/styles/unprefixed/
+.vscode/
+.DS_Store
