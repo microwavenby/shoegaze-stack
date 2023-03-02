@@ -4,7 +4,7 @@ on:
   # Runs on pushes targeting the default branch
   # !! Uncomment the lines below to enable this workflow
   push:
-    branches: ["main","shoegazing"]
+    branches: ["main"]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
