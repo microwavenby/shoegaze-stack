@@ -103,5 +103,3 @@ jobs:
       - name: 🐳 Run Playwright in Docker Compose
         # the sleep is just there to give time for postgres to get started
         run: npx playwright test --retries=3
-        with:
-          wait-on: "http://localhost:9323"
