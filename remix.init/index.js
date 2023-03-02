@@ -3,26 +3,9 @@ const crypto = require("crypto");
 const fs = require("fs/promises");
 const path = require("path");
 
-const toml = require("@iarna/toml");
 const PackageJson = require("@npmcli/package-json");
 const semver = require("semver");
 const YAML = require("yaml");
-
-const cleanupCypressFiles = ({ fileEntries, isTypeScript, packageManager }) =>
-  fileEntries.flatMap(([filePath, content]) => {
-    let newContent = content.replace(
-      new RegExp("npx ts-node", "g"),
-      isTypeScript ? `${packageManager.exec} ts-node` : "node"
-    );
-
-    if (!isTypeScript) {
-      newContent = newContent
-        .replace(new RegExp("create-user.ts", "g"), "create-user.js")
-        .replace(new RegExp("delete-user.ts", "g"), "delete-user.js");
-    }
-
-    return [fs.writeFile(filePath, newContent)];
-  });
 
 const cleanupDeployWorkflow = (deployWorkflow, deployWorkflowPath) => {
   delete deployWorkflow.jobs.typecheck;
@@ -31,15 +14,6 @@ const cleanupDeployWorkflow = (deployWorkflow, deployWorkflowPath) => {
   );
 
   return [fs.writeFile(deployWorkflowPath, YAML.stringify(deployWorkflow))];
-};
-
-const cleanupVitestConfig = (vitestConfig, vitestConfigPath) => {
-  const newVitestConfig = vitestConfig.replace(
-    "setup-test-env.ts",
-    "setup-test-env.js"
-  );
-
-  return [fs.writeFile(vitestConfigPath, newVitestConfig)];
 };
 
 const escapeRegExp = (string) =>
@@ -128,9 +102,6 @@ const main = async ({ isTypeScript, packageManager, rootDirectory }) => {
   const FILE_EXTENSION = isTypeScript ? "ts" : "js";
 
   const README_PATH = path.join(rootDirectory, "README.md");
-  const FLY_TOML_PATH = path.join(rootDirectory, "fly.toml");
-  const EXAMPLE_ENV_PATH = path.join(rootDirectory, ".env.example");
-  const ENV_PATH = path.join(rootDirectory, ".env");
   const DEPLOY_WORKFLOW_PATH = path.join(
     rootDirectory,
     ".github",
@@ -138,66 +109,20 @@ const main = async ({ isTypeScript, packageManager, rootDirectory }) => {
     "deploy.yml"
   );
   const DOCKERFILE_PATH = path.join(rootDirectory, "Dockerfile");
-  const CYPRESS_SUPPORT_PATH = path.join(rootDirectory, "cypress", "support");
-  const CYPRESS_COMMANDS_PATH = path.join(
-    CYPRESS_SUPPORT_PATH,
-    `commands.${FILE_EXTENSION}`
-  );
-  const CREATE_USER_COMMAND_PATH = path.join(
-    CYPRESS_SUPPORT_PATH,
-    `create-user.${FILE_EXTENSION}`
-  );
-  const DELETE_USER_COMMAND_PATH = path.join(
-    CYPRESS_SUPPORT_PATH,
-    `delete-user.${FILE_EXTENSION}`
-  );
-  const VITEST_CONFIG_PATH = path.join(
-    rootDirectory,
-    `vitest.config.${FILE_EXTENSION}`
-  );
 
-  const REPLACER = "blues-stack-template";
+  const REPLACER = "shoegaze-stack-template";
 
   const DIR_NAME = path.basename(rootDirectory);
-  const SUFFIX = getRandomString(2);
+  const APP_NAME = DIR_NAME.replace(/[^a-zA-Z0-9-_]/g, "-");
 
-  const APP_NAME = (DIR_NAME + "-" + SUFFIX)
-    // get rid of anything that's not allowed in an app name
-    .replace(/[^a-zA-Z0-9-_]/g, "-");
-
-  const [
-    prodContent,
-    readme,
-    env,
-    dockerfile,
-    cypressCommands,
-    createUserCommand,
-    deleteUserCommand,
-    deployWorkflow,
-    vitestConfig,
-    packageJson,
-  ] = await Promise.all([
-    fs.readFile(FLY_TOML_PATH, "utf-8"),
+  const [readme, dockerfile, deployWorkflow, packageJson] = await Promise.all([
     fs.readFile(README_PATH, "utf-8"),
-    fs.readFile(EXAMPLE_ENV_PATH, "utf-8"),
     fs.readFile(DOCKERFILE_PATH, "utf-8"),
-    fs.readFile(CYPRESS_COMMANDS_PATH, "utf-8"),
-    fs.readFile(CREATE_USER_COMMAND_PATH, "utf-8"),
-    fs.readFile(DELETE_USER_COMMAND_PATH, "utf-8"),
     readFileIfNotTypeScript(isTypeScript, DEPLOY_WORKFLOW_PATH, (s) =>
       YAML.parse(s)
     ),
-    readFileIfNotTypeScript(isTypeScript, VITEST_CONFIG_PATH),
     PackageJson.load(rootDirectory),
   ]);
-
-  const newEnv = env.replace(
-    /^SESSION_SECRET=.*$/m,
-    `SESSION_SECRET="${getRandomString(16)}"`
-  );
-
-  const prodToml = toml.parse(prodContent);
-  prodToml.app = prodToml.app.replace(REPLACER, APP_NAME);
 
   const newReadme = readme.replace(
     new RegExp(escapeRegExp(REPLACER), "g"),
@@ -214,19 +139,8 @@ const main = async ({ isTypeScript, packageManager, rootDirectory }) => {
   updatePackageJson({ APP_NAME, isTypeScript, packageJson });
 
   const fileOperationPromises = [
-    fs.writeFile(FLY_TOML_PATH, toml.stringify(prodToml)),
     fs.writeFile(README_PATH, newReadme),
-    fs.writeFile(ENV_PATH, newEnv),
     fs.writeFile(DOCKERFILE_PATH, newDockerfile),
-    ...cleanupCypressFiles({
-      fileEntries: [
-        [CYPRESS_COMMANDS_PATH, cypressCommands],
-        [CREATE_USER_COMMAND_PATH, createUserCommand],
-        [DELETE_USER_COMMAND_PATH, deleteUserCommand],
-      ],
-      isTypeScript,
-      packageManager: pm,
-    }),
     packageJson.save(),
     fs.copyFile(
       path.join(rootDirectory, "remix.init", "gitignore"),
@@ -243,10 +157,6 @@ const main = async ({ isTypeScript, packageManager, rootDirectory }) => {
     fileOperationPromises.push(
       ...cleanupDeployWorkflow(deployWorkflow, DEPLOY_WORKFLOW_PATH)
     );
-
-    fileOperationPromises.push(
-      ...cleanupVitestConfig(vitestConfig, VITEST_CONFIG_PATH)
-    );
   }
 
   await Promise.all(fileOperationPromises);
@@ -258,19 +168,13 @@ const main = async ({ isTypeScript, packageManager, rootDirectory }) => {
 
   console.log(
     `
-Setup is almost complete. Follow these steps to finish initialization:
+Setup is almost complete. Follow these steps to run the sample:
 
 - Start the database:
-  ${pm.run("docker")}
+  ${pm.run("dev:startdb")}
 
-- Run setup (this updates the database):
-  ${pm.run("setup")}
-
-- Run the first build (this generates the server you will run):
-  ${pm.run("build")}
-
-- You're now ready to rock and roll 🤘
-  ${pm.run("dev")}
+- You're now ready to rock and roll 👞👀
+  ${pm.run("dev:remix")}
     `.trim()
   );
 };

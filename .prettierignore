@@ -4,8 +4,9 @@ node_modules
 /public/build
 .env
 
-/cypress/screenshots
-/cypress/videos
 /postgres-data
 
-/app/styles/tailwind.css
+/app/styles/*.css
+/app/styles/unprefixed/*
+/styles/*
+.github/*
