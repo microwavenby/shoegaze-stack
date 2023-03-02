@@ -20,7 +20,7 @@ const config: PlaywrightTestConfig = {
      * For example in `await expect(locator).toHaveText();`
      */
     timeout: 5000,
-    toMatchSnapshot: {
+    toHaveScreenshot: {
       /* Set a default ratio accept rate.
        * GitHub Actions runs on Linux, and we're faking those screenshots
        * by copying the Darwin (macos) ones
