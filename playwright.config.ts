@@ -25,6 +25,11 @@ const config: PlaywrightTestConfig = {
        * GitHub Actions runs on Linux, and we're faking those screenshots
        * by copying the Darwin (macos) ones
        */
+
+      /* Another option is to have a command to update the screenshots from Github with
+       * a specific command:
+       * https://github.com/basarat/demo-playwright-vrt/blob/main/.github/workflows/update-snapshots.yml
+       */
       maxDiffPixelRatio: 0.01,
     },
   },

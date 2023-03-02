@@ -102,8 +102,6 @@ const main = async ({ isTypeScript, packageManager, rootDirectory }) => {
   const FILE_EXTENSION = isTypeScript ? "ts" : "js";
 
   const README_PATH = path.join(rootDirectory, "README.md");
-  const EXAMPLE_ENV_PATH = path.join(rootDirectory, ".env.example");
-  const ENV_PATH = path.join(rootDirectory, ".env");
   const DEPLOY_WORKFLOW_PATH = path.join(
     rootDirectory,
     ".github",
@@ -115,30 +113,16 @@ const main = async ({ isTypeScript, packageManager, rootDirectory }) => {
   const REPLACER = "shoegaze-stack-template";
 
   const DIR_NAME = path.basename(rootDirectory);
-  const SUFFIX = getRandomString(2);
+  const APP_NAME = DIR_NAME.replace(/[^a-zA-Z0-9-_]/g, "-");
 
-  const APP_NAME = (DIR_NAME + "-" + SUFFIX)
-    // get rid of anything that's not allowed in an app name
-    .replace(/[^a-zA-Z0-9-_]/g, "-");
-
-  const [readme, env, dockerfile, deployWorkflow, packageJson] =
-    await Promise.all([
-      fs.readFile(README_PATH, "utf-8"),
-      fs.readFile(EXAMPLE_ENV_PATH, "utf-8"),
-      fs.readFile(DOCKERFILE_PATH, "utf-8"),
-      readFileIfNotTypeScript(isTypeScript, DEPLOY_WORKFLOW_PATH, (s) =>
-        YAML.parse(s)
-      ),
-      PackageJson.load(rootDirectory),
-    ]);
-
-  const newEnv = env.replace(
-    /^SESSION_SECRET=.*$/m,
-    `SESSION_SECRET="${getRandomString(16)}"`
-  );
-
-  // const prodToml = toml.parse(prodContent);
-  // prodToml.app = prodToml.app.replace(REPLACER, APP_NAME);
+  const [readme, dockerfile, deployWorkflow, packageJson] = await Promise.all([
+    fs.readFile(README_PATH, "utf-8"),
+    fs.readFile(DOCKERFILE_PATH, "utf-8"),
+    readFileIfNotTypeScript(isTypeScript, DEPLOY_WORKFLOW_PATH, (s) =>
+      YAML.parse(s)
+    ),
+    PackageJson.load(rootDirectory),
+  ]);
 
   const newReadme = readme.replace(
     new RegExp(escapeRegExp(REPLACER), "g"),
@@ -156,7 +140,6 @@ const main = async ({ isTypeScript, packageManager, rootDirectory }) => {
 
   const fileOperationPromises = [
     fs.writeFile(README_PATH, newReadme),
-    fs.writeFile(ENV_PATH, newEnv),
     fs.writeFile(DOCKERFILE_PATH, newDockerfile),
     packageJson.save(),
     fs.copyFile(

@@ -4,12 +4,10 @@ body:
   - type: markdown
     attributes:
       value: >-
-        Thank you for helping to improve Remix!
+        Thank you for helping to improve this Remix stack!
 
-        Our bandwidth on maintaining these stacks is limited. As a team, we're
-        currently focusing our efforts on Remix itself. The good news is you can
-        fork and adjust this stack however you'd like and start using it today
-        as a custom stack. Learn more from
+        As a reminder, you can fork and adjust this stack however you'd like
+        and start using it today as a custom stack. Learn more from
         [the Remix Stacks docs](https://remix.run/stacks).
 
         If you'd still like to report a bug, please fill out this form. We can't
