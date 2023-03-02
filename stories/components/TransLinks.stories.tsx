@@ -1,4 +1,5 @@
-import TransLinks, { TransLinkProps } from "app/components/TransLinks";
+import TransLinks from "app/components/TransLinks";
+import type { TransLinkProps } from "app/components/TransLinks";
 
 export default {
   component: TransLinks,
@@ -10,7 +11,7 @@ const defaultProps: TransLinkProps = {
   i18nLinkKey: "test:translinks.plainStringLinks.links",
 };
 
-const TransLinksTemplate = {
+export const TransLinksTemplate = {
   render: (props: TransLinkProps) => {
     return <TransLinks {...props} />;
   },
