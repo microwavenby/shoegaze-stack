@@ -21,5 +21,5 @@
     "target": "ES2019"
   },
   "exclude": ["../node_modules"],
-  "include": [".env", "**/*.ts", "**/*.tsx", "test/__mocks__/styleMock.js"]
+  "include": [".env", "**/*.ts", "**/*.tsx", "tests/__mocks__/styleMock.js"]
 }

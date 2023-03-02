@@ -53,8 +53,6 @@ const getPackageManagerVersion = (packageManager) =>
   // Copied over from https://github.com/nrwl/nx/blob/bd9b33eaef0393d01f747ea9a2ac5d2ca1fb87c6/packages/nx/src/utils/package-manager.ts#L105-L114
   execSync(`${packageManager} --version`).toString("utf-8").trim();
 
-const getRandomString = (length) => crypto.randomBytes(length).toString("hex");
-
 const readFileIfNotTypeScript = (
   isTypeScript,
   filePath,
@@ -75,7 +73,7 @@ const updatePackageJson = ({ APP_NAME, isTypeScript, packageJson }) => {
   const {
     devDependencies,
     prisma: { seed: prismaSeed, ...prisma },
-    scripts: { typecheck, validate, ...scripts },
+    scripts: { typecheck, ...scripts },
   } = packageJson.content;
 
   packageJson.update({
@@ -91,15 +89,12 @@ const updatePackageJson = ({ APP_NAME, isTypeScript, packageJson }) => {
             .replace("ts-node", "node")
             .replace("seed.ts", "seed.js"),
         },
-    scripts: isTypeScript
-      ? { ...scripts, typecheck, validate }
-      : { ...scripts, validate: validate.replace(" typecheck", "") },
+    scripts: isTypeScript ? { ...scripts, typecheck } : { ...scripts },
   });
 };
 
 const main = async ({ isTypeScript, packageManager, rootDirectory }) => {
   const pm = getPackageManagerCommand(packageManager);
-  const FILE_EXTENSION = isTypeScript ? "ts" : "js";
 
   const README_PATH = path.join(rootDirectory, "README.md");
   const DEPLOY_WORKFLOW_PATH = path.join(
@@ -108,25 +103,36 @@ const main = async ({ isTypeScript, packageManager, rootDirectory }) => {
     "workflows",
     "deploy.yml"
   );
+  const DOCKER_COMPOSE_PATH = path.join(
+    rootDirectory,
+    "docker-compose.e2e.yml"
+  );
   const DOCKERFILE_PATH = path.join(rootDirectory, "Dockerfile");
 
   const REPLACER = "shoegaze-stack-template";
-
+  const DOCKER_COMPOSE_NETWORK_NAME = "shoegaze-e2e";
   const DIR_NAME = path.basename(rootDirectory);
   const APP_NAME = DIR_NAME.replace(/[^a-zA-Z0-9-_]/g, "-");
 
-  const [readme, dockerfile, deployWorkflow, packageJson] = await Promise.all([
-    fs.readFile(README_PATH, "utf-8"),
-    fs.readFile(DOCKERFILE_PATH, "utf-8"),
-    readFileIfNotTypeScript(isTypeScript, DEPLOY_WORKFLOW_PATH, (s) =>
-      YAML.parse(s)
-    ),
-    PackageJson.load(rootDirectory),
-  ]);
+  const [readme, dockerfile, deployWorkflow, dockerComposeFile, packageJson] =
+    await Promise.all([
+      fs.readFile(README_PATH, "utf-8"),
+      fs.readFile(DOCKERFILE_PATH, "utf-8"),
+      readFileIfNotTypeScript(isTypeScript, DEPLOY_WORKFLOW_PATH, (s) =>
+        YAML.parse(s)
+      ),
+      fs.readFile(DOCKER_COMPOSE_PATH, "utf-8"),
+      PackageJson.load(rootDirectory),
+    ]);
 
   const newReadme = readme.replace(
     new RegExp(escapeRegExp(REPLACER), "g"),
     APP_NAME
+  );
+
+  const newDockerCompose = dockerComposeFile.replace(
+    new RegExp(escapeRegExp(DOCKER_COMPOSE_NETWORK_NAME), "g"),
+    `${APP_NAME}-e2e`
   );
 
   const newDockerfile = pm.lockfile
@@ -141,6 +147,7 @@ const main = async ({ isTypeScript, packageManager, rootDirectory }) => {
   const fileOperationPromises = [
     fs.writeFile(README_PATH, newReadme),
     fs.writeFile(DOCKERFILE_PATH, newDockerfile),
+    fs.writeFile(DOCKER_COMPOSE_PATH, newDockerCompose),
     packageJson.save(),
     fs.copyFile(
       path.join(rootDirectory, "remix.init", "gitignore"),
