@@ -93,7 +93,6 @@ jobs:
           node-version: 18
       - name: 📦 Install Docker on macos
         run: brew install docker
-             brew install docker-compose
 
       - name: 🫘 Start colima
         run: colima start

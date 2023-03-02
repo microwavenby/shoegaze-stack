@@ -102,8 +102,8 @@ const config: PlaywrightTestConfig = {
   /* Run your local dev server before starting the tests */
   webServer: {
     command:
-      "docker compose -f docker-compose.e2e.yml up database-e2e --wait && \
-       docker compose -f docker-compose.e2e.yml run --rm remix-migrate-reset && \
+      "docker-compose -f docker-compose.e2e.yml up database-e2e --wait && \
+       docker-compose -f docker-compose.e2e.yml run --rm remix-migrate-reset && \
        npm run dev",
     port: 5556,
     timeout: 240 * 1000,
