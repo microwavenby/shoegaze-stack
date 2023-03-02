@@ -20,6 +20,13 @@ const config: PlaywrightTestConfig = {
      * For example in `await expect(locator).toHaveText();`
      */
     timeout: 5000,
+    toMatchSnapshot: {
+      /* Set a default ratio accept rate.
+       * GitHub Actions runs on Linux, and we're faking those screenshots
+       * by copying the Darwin (macos) ones
+       */
+      maxDiffPixelRatio: 0.01,
+    },
   },
   /* Run tests in files in parallel */
   fullyParallel: true,
