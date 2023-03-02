@@ -79,7 +79,7 @@ jobs:
 
   playwright:
     name: 🎭 Playwright
-    runs-on: macos-latest # This is so our local snapshots can match Github's
+    runs-on: ubuntu-latest
     steps:
       - name: 🛑 Cancel Previous Runs
         uses: styfle/cancel-workflow-action@0.11.0
@@ -94,13 +94,8 @@ jobs:
       - name: 📦 Install Docker on macos
         run: brew install docker docker-compose colima
 
-      # - name: 🎵 Install Docker Compose
-      #   run: DOCKER_CONFIG=${DOCKER_CONFIG:-$HOME/.docker} &&
-      #        mkdir -p $DOCKER_CONFIG/cli-plugins &&
-      #        curl -SL https://github.com/docker/compose/releases/download/v2.16.0/docker-compose-linux-x86_64 -o $DOCKER_CONFIG/cli-plugins/docker-compose &&
-      #        chmod +x $DOCKER_CONFIG/cli-plugins/docker-compose
-      - name: 🫘 Start colima
-        run: colima start
+      - name: Link the Darwin screenshots as Linux
+        run: find e2e -name "*.png" -exec bash -c 'cp "$0" "${0/darwin/linux}"' {} \;
 
       - name: 📥 Download deps
         uses: bahmutov/npm-install@v1
