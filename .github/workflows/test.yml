@@ -98,7 +98,7 @@ jobs:
           useLockFile: false
 
       - name: 🎭 Install Playwright browsers
-        run: npx playwright install
+        run: npx playwright install --with-deps
 
       - name: 🐳 Run Playwright in Docker Compose
         # the sleep is just there to give time for postgres to get started
