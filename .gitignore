@@ -20,3 +20,4 @@ node_modules
 /app/styles/unprefixed/
 .vscode/
 .DS_Store
+storybook-static/

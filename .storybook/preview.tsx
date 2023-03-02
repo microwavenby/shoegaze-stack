@@ -17,7 +17,26 @@ i18next
     resources: {
       en: {
         common: common,
-        test: {}, // Add test namespace localization here as needed
+        test: {
+          translinks: {
+            plainStringLinks: {
+              text: "first <0>second</0> <1>third</1>",
+              links: ["https://external.com", "/relative/link"],
+            },
+            plainStringLinksComplicated: {
+              text: "<1>first</1> <0>second</0> third <0>fourth</0> <1>fifth</1>",
+              links: ["https://external.com", "/relative/link"],
+            },
+            styledString: {
+              text: "first <strong>second</strong> <0>third</0>",
+              links: ["https://external.com"],
+            },
+            styledLink: {
+              text: "first <strong><0>second</0></strong>",
+              links: ["https://external.com"],
+            },
+          }, // Add test namespace localization here as needed
+        },
       },
     },
   });
