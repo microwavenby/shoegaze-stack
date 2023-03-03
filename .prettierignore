@@ -10,3 +10,4 @@ node_modules
 /app/styles/unprefixed/*
 /styles/*
 .github/*
+/storybook-static
