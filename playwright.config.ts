@@ -112,6 +112,7 @@ const config: PlaywrightTestConfig = {
   // outputDir: 'test-results/',
 
   /* Run your local dev server before starting the tests */
+  // Should this automatically run when running `npm run e2e`?
   webServer: {
     command:
       "docker compose -f docker-compose.e2e.yml up database-e2e --wait && \
@@ -121,6 +122,7 @@ const config: PlaywrightTestConfig = {
     timeout: 240 * 1000,
     reuseExistingServer: !process.env.CI,
     env: {
+      // Is there a way to pass this in from the .env file instead?
       DATABASE_URL:
         "postgresql://postgres:incredible_local_secret_phrase@localhost:5555/postgres?schema=public",
       PORT: "5556",
