@@ -69,6 +69,7 @@ export const i18nwrapper = ({
   );
 };
 
+// What does this do?
 export const renderWithRouter = (
   ui: ReactElement,
   options?: Omit<RenderOptions, "wrapper">
@@ -93,6 +94,7 @@ export function setupUserEvent(): UserEventReturn {
   return user;
 }
 
+// Do we still need this?
 // Setup function using AHA principle.
 // See https://kentcdodds.com/blog/avoid-nesting-when-youre-testing#apply-aha-avoid-hasty-abstractions
 // export function setup(route: string) {
@@ -108,6 +110,7 @@ export type FormObject = {
   [inputName: string]: any;
 };
 
+// What does this do?
 export function createForm(obj: FormObject): FormData {
   const parsedForm = new FormData();
   for (let key in obj) {

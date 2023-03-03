@@ -1,3 +1,4 @@
+// Could you add a blurb about what this file is for?
 export const helpers = {
   error: undefined,
   touched: false,

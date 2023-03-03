@@ -1,3 +1,4 @@
+//has this file been replaced by setup.tsx?
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
 
