@@ -173,6 +173,7 @@ const main = async ({ isTypeScript, packageManager, rootDirectory }) => {
     stdio: "inherit",
   });
 
+  // Create a starting .env file?
   console.log(
     `
 Setup is almost complete. Follow these steps to run the sample:
