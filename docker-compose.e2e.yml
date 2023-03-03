@@ -27,5 +27,6 @@ services:
       - 5555:5432
     networks:
       - shoegaze-e2e
+# I don't think you need to set a network. The default one should be fine.
 networks:
   shoegaze-e2e:
