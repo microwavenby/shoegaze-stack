@@ -7,7 +7,7 @@
     "dev": "run-s dev:startdb css dev:remix",
     "dev:remix": "remix dev",
     "dev:startdb": "docker-compose up -d --wait && npx prisma db push && npx prisma db seed",
-    // Is it ok if we gitignore the `/styles` dir?
+    // Is it ok if we gitignore the `/app/styles` dir?
     "css": "run-s build:css post:css",
     "build:css": "sass -I ./styles -I ./node_modules/@uswds -I ./node_modules/@uswds/uswds/packages styles:app/styles/unprefixed --style compressed",
     "post:css": "postcss ./app/styles/unprefixed/styles.css --use autoprefixer -d ./app/styles",
