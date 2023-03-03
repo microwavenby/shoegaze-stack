@@ -1,4 +1,7 @@
 {
+  "Demo": {
+    "alertText": "This site is a demonstration project and for example purposes only"
+  },
   "Index": {
     "button": "Open the README",
     "header": "<strong>Remix</strong> is a framework for server-rendered, fast web applications",
@@ -27,4 +30,5 @@
     },
     "header": "Shoegaze Stack"
   },
+  "routingError": "Some required responses are missing. Please go back through the form and answer all required questions."
 }
