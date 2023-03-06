@@ -37,7 +37,7 @@ jobs:
         run: npm install -D
         working-directory: ./
       - name: Build
-        run: BASE_PATH=${{ steps.pages_config.outputs.base_path }} npm run build-storybook
+        run: BASE_PATH=${{ steps.pages_config.outputs.base_path }} npm run storybook:build
         working-directory: ./
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1

@@ -108,15 +108,17 @@ const main = async ({ isTypeScript, packageManager, rootDirectory }) => {
     "docker-compose.e2e.yml"
   );
   const DOCKERFILE_PATH = path.join(rootDirectory, "Dockerfile");
-
+  const EXAMPLE_ENV_PATH = path.join(rootDirectory, ".env.example");
+  const ENV_PATH = path.join(rootDirectory, ".env");
   const REPLACER = "shoegaze-stack-template";
   const DOCKER_COMPOSE_NETWORK_NAME = "shoegaze-e2e";
   const DIR_NAME = path.basename(rootDirectory);
   const APP_NAME = DIR_NAME.replace(/[^a-zA-Z0-9-_]/g, "-");
 
-  const [readme, dockerfile, deployWorkflow, dockerComposeFile, packageJson] =
+  const [readme, envfile, dockerfile, deployWorkflow, dockerComposeFile, packageJson] =
     await Promise.all([
       fs.readFile(README_PATH, "utf-8"),
+      fs.readFile(EXAMPLE_ENV_PATH, "utf-8"),
       fs.readFile(DOCKERFILE_PATH, "utf-8"),
       readFileIfNotTypeScript(isTypeScript, DEPLOY_WORKFLOW_PATH, (s) =>
         YAML.parse(s)
@@ -146,6 +148,7 @@ const main = async ({ isTypeScript, packageManager, rootDirectory }) => {
 
   const fileOperationPromises = [
     fs.writeFile(README_PATH, newReadme),
+    fs.writeFile(ENV_PATH, envfile),
     fs.writeFile(DOCKERFILE_PATH, newDockerfile),
     fs.writeFile(DOCKER_COMPOSE_PATH, newDockerCompose),
     packageJson.save(),

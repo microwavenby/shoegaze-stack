@@ -74,16 +74,16 @@ Fork it, change it, and use `npx create-remix --template your/repo`! Make it you
   This is two npm commands back to back:
 
   ```sh
-  npm run build:css
-  npm run post:css
+  npm run css:build
+  npm run css:post
   ```
 
 - Watch for CSS changes
 
-  If you are making multiple CSS changes, you can run the `dev:css` command to recompile CSS on changes
+  If you are making multiple CSS changes, you can run the `css:dev` command to recompile CSS on changes
 
   ```sh
-  npm run dev:css
+  npm run css:dev
   ```
 
 ## Relevant code:

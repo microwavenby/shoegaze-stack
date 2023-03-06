@@ -21,7 +21,6 @@ test("Open the README link", async ({ page }) => {
   await page.goto("/");
   const readmeLink = page.getByRole("link", { name: "Open the README" });
   await expect(readmeLink).toBeVisible();
-  // Expects the URL to contain /how-it-works.
   await expect(readmeLink).toHaveAttribute("href", "../README.md");
 });
 

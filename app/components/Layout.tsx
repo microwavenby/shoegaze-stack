@@ -56,8 +56,8 @@ const Layout = ({
         primary=""
         secondary={
           <TransLinks
-            i18nTextKey="Layout.footer1.text"
-            i18nLinkKey="Layout.footer1.links"
+            i18nTextKey="Layout.footer.text"
+            i18nLinkKey="Layout.footer.links"
           />
         }
       />
