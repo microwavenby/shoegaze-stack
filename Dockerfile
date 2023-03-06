@@ -5,7 +5,7 @@ FROM node:18-slim as base
 WORKDIR /srv
 RUN apt-get update \
   && apt-get install -y --no-install-recommends \
-    openssl
+  openssl
 
 # -------- Image: deps -------- #
 # Install all node_modules, including dev dependencies
@@ -20,7 +20,7 @@ COPY --from=deps /srv/node_modules /srv/node_modules
 COPY prisma .
 RUN npx prisma generate
 COPY . .
-CMD ["npm", "run", "dev:remix"]
+CMD ["npm", "run", "dev:docker"]
 
 # -------- Image: build -------- #
 # Build the app

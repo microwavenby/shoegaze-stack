@@ -28,6 +28,7 @@ services:
     init: true
     ports:
       - "3003:3000"
+      - "6066:6006"
     volumes:
       # Mount the app directory for faster local development.
       - ./:/srv

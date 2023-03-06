@@ -69,7 +69,10 @@ export const i18nwrapper = ({
   );
 };
 
-// What does this do?
+/* testing-react supports an alternate renderer, and this
+ * renderer wraps the object under test in a BrowserRouter and I18NextProvider
+ * so that React hooks and i18n calls function
+ */
 export const renderWithRouter = (
   ui: ReactElement,
   options?: Omit<RenderOptions, "wrapper">
@@ -94,23 +97,20 @@ export function setupUserEvent(): UserEventReturn {
   return user;
 }
 
-// Do we still need this?
-// Setup function using AHA principle.
-// See https://kentcdodds.com/blog/avoid-nesting-when-youre-testing#apply-aha-avoid-hasty-abstractions
-// export function setup(route: string) {
-//   // setupDefaultRoute(route);
-
-//   // Reset the mock session before each test.
-
-//   return {
-//   };
-// }
-
 export type FormObject = {
   [inputName: string]: any;
 };
 
-// What does this do?
+// This is a helper to take an object like this one:
+/* const contact: FormObject = {
+      firstName: firstName,
+      lastName: lastName,
+      phone: phone,
+      comments: "",
+    };
+ * and turn it into a FormData object, like what is returned on a Request
+ * and what a withZod validator requires
+ */
 export function createForm(obj: FormObject): FormData {
   const parsedForm = new FormData();
   for (let key in obj) {

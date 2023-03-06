@@ -2,7 +2,6 @@
 module.exports = {
   root: true,
   extends: [
-    "nava",
     // Disable ESLint code formatting rules which conflict with Prettier
     "prettier",
     "@remix-run/eslint-config",

@@ -1,5 +1,7 @@
 import { Form } from "@remix-run/react";
-// Do we need these exports in the stack? I assume yes, but asking just in case
+// This WebPack shim is necessary to patch the useField hook
+// and allow components that utilize useField to propagate errors
+// and ValidatedForms (that require validators) to work in Storybook
 export {
   validationError,
   setFormDefaults,

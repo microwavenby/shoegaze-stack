@@ -1,4 +1,6 @@
-// Do we need these exports in the stack? I assume yes, but asking just in case
+// Using the WebPack shim to push this file in instead of Remix-React
+// means that we need these re-exports for hooks and components that do
+// work to continue working without modification
 export {
   Link,
   useLocation,
@@ -19,10 +21,9 @@ export const useActionData = () => {};
 
 // Add your loader parameters necessary for your Storybook stories here
 // Using unique variable names in your pages is important
-// This might be better commented out with a more generic example for the stack?
 export function useLoaderData<T>() {
   return {
-    backRoute: "#back",
+    // Insert your useLoaderData variable names / values here
   };
 }
 

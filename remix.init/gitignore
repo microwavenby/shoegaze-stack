@@ -1,5 +1,5 @@
 /.cache
-/app/styles/unprefixed/
+/app/styles/*
 /build
 /coverage
 /node_modules

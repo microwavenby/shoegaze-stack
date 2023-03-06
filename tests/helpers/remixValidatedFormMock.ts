@@ -1,4 +1,6 @@
-// Could you add a blurb about what this file is for?
+// This file is the Jest mock for supporting remix-validated-form
+// The useField hook will not work out of the box, and it returns a prop-getter -
+// so our mock needs to as well
 export const helpers = {
   error: undefined,
   touched: false,
