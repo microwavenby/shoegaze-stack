@@ -18,20 +18,23 @@ import { camelCase, upperFirst } from "lodash";
 import { useEffect } from "react";
 
 export function useChangeLanguage(locale: string) {
-  let { i18n } = useTranslation();
+  const { i18n } = useTranslation();
   useEffect(() => {
-    i18n.changeLanguage(locale);
+    const changeLanguage = async () => {
+      await i18n.changeLanguage(locale);
+    };
+    changeLanguage().catch(console.error);
   }, [locale, i18n]);
 }
 
 export const meta: MetaFunction = ({ location }) => {
-  // eslint-disable-next-line -- This cannot be a component, it mutates headers
-  let { t } = useTranslation();
+  // eslint-disable-next-line react-hooks/rules-of-hooks -- This cannot be a component, it mutates headers
+  const { t } = useTranslation();
   const route = location.pathname != "/" ? location.pathname : "index";
-  const titleKey = `${upperFirst(camelCase(route))}.title`;
+  const title = t(`${upperFirst(camelCase(route))}.title`);
   return {
     charset: "utf-8",
-    title: t(titleKey) as string,
+    title: title,
     viewport: "width=device-width,initial-scale=1",
   };
 };
@@ -45,8 +48,8 @@ export function links() {
 
 type LoaderData = { locale: string; demoMode: string; missingData: string };
 
-export let loader: LoaderFunction = async ({ request }) => {
-  let locale = await i18next.getLocale(request);
+export const loader: LoaderFunction = async ({ request }) => {
+  const locale = await i18next.getLocale(request);
   const demoMode = process.env.NEXT_PUBLIC_DEMO_MODE ?? "false";
   const url = new URL(request.url);
   const missingData =
@@ -54,7 +57,7 @@ export let loader: LoaderFunction = async ({ request }) => {
   return json<LoaderData>({ locale, demoMode, missingData });
 };
 
-export let handle = {
+export const handle = {
   // In the handle export, we can add a i18n key with namespaces our route
   // will need to load. This key can be a single string or an array of strings.
   // TIP: In most cases, you should set this to your defaultNS from your i18n config
@@ -64,8 +67,8 @@ export let handle = {
 
 export default function App() {
   // Get the locale from the loader
-  let { locale, demoMode, missingData } = useLoaderData<LoaderData>();
-  let { i18n } = useTranslation();
+  const { locale, demoMode, missingData } = useLoaderData<LoaderData>();
+  const { i18n } = useTranslation();
 
   // This hook will change the i18n instance language to the current locale
   // detected by the loader, this way, when we do something to change the

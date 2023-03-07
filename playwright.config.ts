@@ -114,7 +114,7 @@ const config: PlaywrightTestConfig = {
   /* Run your local dev server before starting the tests */
   /* This command is what gets run by playwright automatically
    * (and implicitly when you run `npm run e2e`)
-  */
+   */
   webServer: {
     command:
       "docker compose -f docker-compose.e2e.yml up database-e2e --wait && \

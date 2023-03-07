@@ -28,5 +28,5 @@ test("Open the README link", async ({ page }) => {
 test("the index page sets no cookies", async ({ page }) => {
   await page.goto("/");
   const cookies = await page.context().cookies();
-  await expect(cookies).toHaveLength(0);
+  expect(cookies).toHaveLength(0);
 });

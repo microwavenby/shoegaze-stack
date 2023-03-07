@@ -10,6 +10,8 @@ it("should match snapshot", () => {
   expect(container).toMatchSnapshot();
 });
 
+// eslint-disable-next-line jest/expect-expect
 it("should pass accessibility scan", async () => {
+  // testAccessibility does have an assertion (expect(results).toHaveNoViolations)
   await testAccessibility(<Layout children={<h1>'child'</h1>} />);
 });

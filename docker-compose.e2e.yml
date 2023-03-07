@@ -3,7 +3,7 @@ version: "3.7"
 services:
   remix-migrate-reset:
     build:
-      target: test
+      target: dev
       context: .
     environment:
       DATABASE_URL: postgresql://postgres:incredible_local_secret_phrase@database-e2e:5432/postgres?schema=public

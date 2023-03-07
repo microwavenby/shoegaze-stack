@@ -60,7 +60,8 @@ export const i18nwrapper = ({
         // on the browser, so we disable it
         caches: [],
       },
-    });
+    })
+    .catch(() => "Failed to initialize i18next in Jest Setup");
 
   return (
     <BrowserRouter>
@@ -98,6 +99,7 @@ export function setupUserEvent(): UserEventReturn {
 }
 
 export type FormObject = {
+  // eslint-disable-next-line  @typescript-eslint/no-explicit-any
   [inputName: string]: any;
 };
 
@@ -113,14 +115,18 @@ export type FormObject = {
  */
 export function createForm(obj: FormObject): FormData {
   const parsedForm = new FormData();
-  for (let key in obj) {
+  for (const key in obj) {
+    // -- We don't know what this object contains, so we can't type it
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     if (obj[key].forEach) {
       // This lets us pass in arrays or strings and build correct form data
-      obj[key].forEach((item: any) => {
+      // (we DO know that it has a forEach method)
+      // eslint-disable-next-line
+      obj[key].forEach((item: string) => {
         parsedForm.append(key, item);
       });
     } else {
-      parsedForm.append(key, obj[key]);
+      parsedForm.append(key, obj[key] as string);
     }
   }
   return parsedForm;

@@ -7,6 +7,7 @@ import db from "app/utils/db.connection";
 it("returns a 1 from a raw SELECT 1", async () => {
   prismaMock.$queryRaw.mockResolvedValue([{ connected: 1 }]);
   const result = await db.$queryRaw`SELECT 1 as CONNECTED`;
+  // eslint-disable-next-line @typescript-eslint/unbound-method
   expect(prismaMock.$queryRaw).toHaveBeenCalledWith(["SELECT 1 as CONNECTED"]);
   expect(result).toStrictEqual([{ connected: 1 }]);
 });

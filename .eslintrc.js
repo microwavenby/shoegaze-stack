@@ -7,6 +7,7 @@ module.exports = {
     "@remix-run/eslint-config",
     "@remix-run/eslint-config/node",
   ],
+  ignorePatterns: ["**/storybook-static"],
   // Additional lint rules. These get layered onto the top-level rules.
   overrides: [
     {
