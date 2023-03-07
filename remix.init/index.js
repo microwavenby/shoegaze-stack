@@ -1,5 +1,4 @@
 const { execSync } = require("child_process");
-const crypto = require("crypto");
 const fs = require("fs/promises");
 const path = require("path");
 
@@ -115,17 +114,23 @@ const main = async ({ isTypeScript, packageManager, rootDirectory }) => {
   const DIR_NAME = path.basename(rootDirectory);
   const APP_NAME = DIR_NAME.replace(/[^a-zA-Z0-9-_]/g, "-");
 
-  const [readme, envfile, dockerfile, deployWorkflow, dockerComposeFile, packageJson] =
-    await Promise.all([
-      fs.readFile(README_PATH, "utf-8"),
-      fs.readFile(EXAMPLE_ENV_PATH, "utf-8"),
-      fs.readFile(DOCKERFILE_PATH, "utf-8"),
-      readFileIfNotTypeScript(isTypeScript, DEPLOY_WORKFLOW_PATH, (s) =>
-        YAML.parse(s)
-      ),
-      fs.readFile(DOCKER_COMPOSE_PATH, "utf-8"),
-      PackageJson.load(rootDirectory),
-    ]);
+  const [
+    readme,
+    envfile,
+    dockerfile,
+    deployWorkflow,
+    dockerComposeFile,
+    packageJson,
+  ] = await Promise.all([
+    fs.readFile(README_PATH, "utf-8"),
+    fs.readFile(EXAMPLE_ENV_PATH, "utf-8"),
+    fs.readFile(DOCKERFILE_PATH, "utf-8"),
+    readFileIfNotTypeScript(isTypeScript, DEPLOY_WORKFLOW_PATH, (s) =>
+      YAML.parse(s)
+    ),
+    fs.readFile(DOCKER_COMPOSE_PATH, "utf-8"),
+    PackageJson.load(rootDirectory),
+  ]);
 
   const newReadme = readme.replace(
     new RegExp(escapeRegExp(REPLACER), "g"),

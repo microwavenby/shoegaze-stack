@@ -9,10 +9,10 @@ type imgObj = {
 };
 
 export default function Index() {
-  let { t } = useTranslation();
+  const { t } = useTranslation();
   const Griddify = (image_list: imgObj[]) => {
     const chunkSize = 4;
-    let content = [];
+    const content = [];
     for (let i = 0; i < image_list.length; i += chunkSize) {
       const chunk = image_list.slice(i, i + chunkSize);
       content.push(

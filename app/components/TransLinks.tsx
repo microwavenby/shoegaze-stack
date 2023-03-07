@@ -11,8 +11,8 @@ export type TransLinkProps = {
 
 export const TransLinks = (props: TransLinkProps): ReactElement => {
   const { i18nTextKey, i18nLinkKey } = props;
-  let { t } = useTranslation();
-  const linkArray = t(i18nLinkKey, { returnObjects: true }) as Array<string>;
+  const { t } = useTranslation();
+  const linkArray: Array<string> = t(i18nLinkKey, { returnObjects: true });
   const linkAnchors: ReactElement[] = linkArray.map((link: string) => {
     if (/^\//.test(link)) {
       return (

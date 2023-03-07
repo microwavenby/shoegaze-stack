@@ -1,3 +1,5 @@
+/* eslint-disable no-var */
+// We cannot use a let or const in a global object
 import { PrismaClient } from "@prisma/client";
 let db: PrismaClient;
 declare global {
